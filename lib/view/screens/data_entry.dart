@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:raghavprjii/controller/provider/user_provider.dart';
 import 'package:raghavprjii/view/screens/sign_in.dart';
+import 'package:raghavprjii/view/screens/widget/check_box_text.dart';
 
 bool firstCheckBox= false;
 bool secondCheckBox= false;
@@ -62,63 +65,38 @@ class DataEntryScreenState extends State<DataEntryScreen> {
   Widget build(BuildContext context) {
   var height = MediaQuery.of(context).size.height;
   var width = MediaQuery.of(context).size.width;  
-  //Scaffold(
-      //   backgroundColor: const Color.fromARGB(255, 13, 173, 157),
+    return Consumer<UserProvider>(
+      builder: (context,user,_) {
+          final providerUser = Provider.of<UserProvider>(context);
+        return Scaffold(
+          body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(left: width*0.08 , right: width*0.08 ), // Adding padding around TextField
+                child: Column(
+                  mainAxisAlignment:
+                      MainAxisAlignment.start, // Center the TextField vertically
+                  children: <Widget>[
+                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                        //  Expanded(child: SizedBox()),
+                         Image.asset('assets/iskconLogo.png',height: height*0.1 , width: width*0.2,),
+                        //  Expanded(child: SizedBox()),
+                         CircleAvatar(backgroundImage: NetworkImage(providerUser.getUser().photoUrl??""),)
+                       ],
+                     ),
         
-      //   body: SingleChildScrollView(
-      //     scrollDirection: Axis.vertical,
-      //     child: SafeArea(child: DataEntryScreen())),
-      // ),
-  
-    return Scaffold(
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(height*0.03), // Adding padding around TextField
-            child: Column(
-              mainAxisAlignment:
-                  MainAxisAlignment.start, // Center the TextField vertically
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(bottom: height*0.01 , top: height*0.02),
-                  child: Container(
-                    height: height*0.07,
-                    child: TextField(
-                      controller: _nameController,
-                      
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                            color: Colors.white,
-                            width: 3,
-                          ),
-                        ),
-                        // labelText: ' Name',
-                        hintText: 'Name',
-                        contentPadding: EdgeInsets.all(0),
-                        
-                        hintStyle:
-                            TextStyle(color: Colors.white, fontWeight: FontWeight.bold ,),
-                        prefixIcon: Icon(Icons.person, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                
-                Padding(
-                   padding: EdgeInsets.only(bottom: height*0.02 , top: height*0.014),
-                  child: Container(
-                    height: height*0.07,
-                    child: TextField(
-                      controller: _phoneController,
-                      keyboardType: TextInputType.phone,
-                     style: TextStyle(color: Colors.white),
+                SizedBox(width: double.infinity, height: height*0.02,),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: height*0.01 , top: height*0.02),
+                      child: Container(
+                        height: height*0.06,
+                        child: TextField(
+                          controller: _nameController,
+                          
+                          style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -126,249 +104,179 @@ class DataEntryScreenState extends State<DataEntryScreen> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
                               borderSide: BorderSide(
-                                color: Colors.white,
+                                color: Colors.black,
                                 width: 3,
                               ),
                             ),
                             // labelText: ' Name',
-                            hintText: 'Number',
+                            hintText: 'Name',
                             contentPadding: EdgeInsets.all(0),
                             
                             hintStyle:
-                                TextStyle(color: Colors.white, fontWeight: FontWeight.bold ,),
-                            prefixIcon: Icon(Icons.phone_iphone_sharp, color: Colors.white),
+                                TextStyle(color: Colors.black, fontWeight: FontWeight.bold ,),
+                            prefixIcon: Icon(Icons.person, color: Colors.black),
                           ),
-                    ),
-                  ),
-                ),
-                Padding(
-                   padding: EdgeInsets.only(bottom: height*0.03 , top: height*0.014),
-                  child: Container(
-                    height: height*0.07,
-                    child: TextField(
-                      controller: _addressController,
-                      keyboardType: TextInputType.phone,
-                     style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 3,
-                              ),
-                            ),
-                            // labelText: ' Name',
-                            hintText: 'Home',
-                            contentPadding: EdgeInsets.all(0),
-                            
-                            hintStyle:
-                                TextStyle(color: Colors.white, fontWeight: FontWeight.bold ,),
-                            prefixIcon: Icon(Icons.home, color: Colors.white),
-                          ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      firstCheckBox=!firstCheckBox;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Transform.scale(
-                        scale: 0.8,
-                        child: Checkbox(value: firstCheckBox,
-                         
-                         onChanged: (value){
-                          setState(() {
-                            print(value);
-                            firstCheckBox=value!;
-                          });
-                        },
-                        checkColor: Color.fromARGB(255, 13, 173, 157),
-                        activeColor: Colors.white,
-                        
                         ),
                       ),
-                      Text(
-                      'Asked question',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: MediaQuery.of(context).size.height*0.028,
-                      ),
                     ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      secondCheckBox=!secondCheckBox;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Transform.scale(
-                        scale: 0.8,
-                        child: Checkbox(value: secondCheckBox,
-                         
-                         onChanged: (value){
-                          setState(() {
-                            print(value);
-                            secondCheckBox=value!;
-                          });
-                        },
-                        checkColor: Color.fromARGB(255, 13, 173, 157),
-                        activeColor: Colors.white,
-                        
-                        ),
-                      ),
-                      Text(
-                      'Purchased Book',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: MediaQuery.of(context).size.height*0.028,
-                      ),
-                    ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      thirdCheckBox=!thirdCheckBox;
-                    });
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Transform.scale(
-                        scale: 0.8,
-                        child: Checkbox(value: thirdCheckBox,
-                         
-                         onChanged: (value){
-                          setState(() {
-                            print(value);
-                            thirdCheckBox=value!;
-                          });
-                        },
-                        checkColor: Color.fromARGB(255, 13, 173, 157),
-                        activeColor: Colors.white,
-                        
-                        ),
-                      ),
-                      Container(
-                        width: width*0.7,
-                        child: Text(
-                        'Connected with other ISKCON Temple',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: MediaQuery.of(context).size.height*0.028,
-                        ),
-                                    ),
-                      ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                   setState(() {
-                      fourthCheckBox=!fourthCheckBox;
-                   });
-                  },
-                  child: Row(
-                    children: [
-                      Transform.scale(
-                        scale: 0.8,
-                        child: Checkbox(value: fourthCheckBox,
-                         
-                         onChanged: (value){
-                          setState(() {
-                            print(value);
-                            fourthCheckBox=value!;
-                          });
-                        },
-                        checkColor: Color.fromARGB(255, 13, 173, 157),
-                        activeColor: Colors.white,
-                        
-                        ),
-                      ),
-                      Text(
-                      'Donation',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: MediaQuery.of(context).size.height*0.028,
-                      ),
-                    ),
-                    ],
-                  ),
-                ),
-               Visibility(
-                visible: fourthCheckBox ? true : false,
-                 child: TextField(
-                        controller: _dontaionController,
-                        keyboardType: TextInputType.number,
-                       style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                  color: Colors.white,
-                                  width: 3,
+                    
+                    Padding(
+                       padding: EdgeInsets.only(bottom: height*0.02 , top: height*0.014),
+                      child: Container(
+                        height: height*0.06,
+                        child: TextField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
+                         style: TextStyle(color: Colors.black),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                    width: 3,
+                                  ),
+                                ),
+                                // labelText: ' Name',
+                                hintText: 'Number',
+                                contentPadding: EdgeInsets.all(0),
+                                
+                                hintStyle:
+                                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold ,),
+                                prefixIcon: Icon(Icons.phone_iphone_sharp, color: Colors.black),
                               ),
-                              // labelText: ' Name',
-                              hintText: 'Enter donation amount',
-                              contentPadding: EdgeInsets.all(0),
-                              
-                              hintStyle:
-                                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold ,),
-                              prefixIcon: Padding(
-                                padding:  EdgeInsets.only(left: width*0.04 , top: height*0.02),
-                                child: Text("₹",style: TextStyle(color: Colors.white , fontSize: height*0.028 ),),
-                              ),
-                 
-                            ),
+                        ),
                       ),
-               ),
-                SizedBox(height: height*0.1),
-                // Space before submit button
-                ElevatedButton(
-                  onPressed: () {
-                  //  var user = await LoginAPI.login();
-                  //  if(user!=null){
-                  //   print(user.displayName);
-                  //  }
-                    submitForm();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 27, 145, 132),
-          // Button color
-                    padding: EdgeInsets.symmetric(
-                        horizontal: width*0.14, vertical: height*0.01), // Button size
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
                     ),
-                  ),
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(fontSize: height*0.032, color:  _nameController.text.isNotEmpty && _phoneController.text.isNotEmpty
-                    ? fourthCheckBox ? _dontaionController.text.isNotEmpty?Colors.white:const Color.fromARGB(255, 66, 103, 99): 
-                       const Color.fromARGB(255, 66, 103, 99): const Color.fromARGB(255, 66, 103, 99)),
-                  ),
+                    Padding(
+                       padding: EdgeInsets.only(bottom: height*0.03 , top: height*0.014),
+                      child: Container(
+                        height: height*0.06,
+                        child: TextField(
+                          controller: _addressController,
+                          keyboardType: TextInputType.phone,
+                         style: TextStyle(color: Colors.black),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                    width: 3,
+                                  ),
+                                ),
+                                // labelText: ' Name',
+                                hintText: 'Home',
+                                contentPadding: EdgeInsets.all(0),
+                                
+                                hintStyle:
+                                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold ,),
+                                prefixIcon: Icon(Icons.home, color: Colors.black),
+                              ),
+                        ),
+                      ),
+                    ),
+                    CheckBoxText(Text: "Asked Questions", isChecked: false),
+                    CheckBoxText(Text: "Purchased Book", isChecked: false),
+                    CheckBoxText(Text: "Connected with other ISKCON temple", isChecked: false),
+                    InkWell(
+                      onTap: () {
+                       setState(() {
+                          fourthCheckBox=!fourthCheckBox;
+                       });
+                      },
+                      child: Row(
+                        children: [
+                          Transform.scale(
+                            scale: 0.8,
+                            child: Checkbox(value: fourthCheckBox,
+                             
+                             onChanged: (value){
+                              setState(() {
+                                print(value);
+                                fourthCheckBox=value!;
+                              });
+                            },
+                            checkColor: Colors.white,
+                            activeColor: Colors.black,
+                            
+                            ),
+                          ),
+                          Text(
+                          'Donation',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: MediaQuery.of(context).size.height*0.022,
+                          ),
+                        ),
+                        ],
+                      ),
+                    ),
+                   Visibility(
+                    visible: fourthCheckBox ? true : false,
+                     child: Container(
+                      height: height*0.06,
+                       child: TextField(
+                              controller: _dontaionController,
+                              keyboardType: TextInputType.number,
+                             style: TextStyle(color: Colors.black),
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                      borderSide: BorderSide(
+                                        color: Colors.black,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    // labelText: ' Name',
+                                    hintText: 'Enter donation amount',
+                                    contentPadding: EdgeInsets.all(0),
+                                    
+                                    hintStyle:
+                                        TextStyle(color: Colors.black, fontWeight: FontWeight.bold ,),
+                                    prefixIcon: Padding(
+                                      padding:  EdgeInsets.only(left: width*0.04 , top: height*0.01),
+                                      child: Text("₹",style: TextStyle(color: Colors.black , fontSize: height*0.028 ),),
+                                    ),
+                       
+                                  ),
+                            ),
+                     ),
+                   ),
+                    SizedBox(height: height*0.04),
+                    // Space before submit button
+                    ElevatedButton(
+                      onPressed: () {
+                        submitForm();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+              // Button color
+                        padding: EdgeInsets.symmetric(
+                            horizontal: width*0.14, vertical: height*0.01), // Button size
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: Text(
+                        'Submit',
+                        style: TextStyle(fontSize: height*0.032, color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }

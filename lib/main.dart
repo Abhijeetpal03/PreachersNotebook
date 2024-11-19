@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:raghavprjii/controller/provider/user_provider.dart';
 import 'dart:convert';
 
 import 'package:raghavprjii/view/screens/data_entry.dart';
@@ -16,13 +18,16 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/signIn': (context) => SignIn(),
-        '/dataEntry' : (context) => DataEntryScreen()
-      },
-      home: SignIn()
+    return ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/signIn': (context) => SignIn(),
+          '/dataEntry' : (context) => DataEntryScreen()
+        },
+        home: SignIn()
+      ),
     );
   }
 }

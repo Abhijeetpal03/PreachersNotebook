@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:raghavprjii/controller/google_signIn.dart';
 
 class SignIn extends StatelessWidget {
   const SignIn({super.key});
@@ -20,20 +21,8 @@ class SignIn extends StatelessWidget {
             SizedBox(width: double.infinity, height: height*0.3,),
             InkWell(
               onTap: () async{
-                GoogleSignIn googleSignIn = GoogleSignIn();
-                try{
-                  var result = await googleSignIn.signIn();
-                  // var user = await LoginAPI.login();
-                  //  print("User is $user");
-                  //  if(user!=null){
-                  //   print(user.displayName);
-                   
-              // }
-              print("result is $result");
-                }
-                catch(e){
-                  print(e);
-                }
+               GoogleAuth googleAuth = GoogleAuth();
+               googleAuth.google_sign_in(context);
                    },
               child: Container(
                 decoration: BoxDecoration(
